@@ -15,16 +15,17 @@ Slides viewable here:  [Click Me!](bit.ly/stcpyw20ifs)
 
 💡  **Intermediate Project**
 
-![alt text](http://url/to/img.png)
-![alt text](http://url/to/img.png)
+![](https://github.com/shongyang/STC-PYTHON-WORKSHOP-2020---INTERMEDIATE/blob/main/OTHER%20MATERIALS/demo1.png=150x150)
+![](https://github.com/shongyang/STC-PYTHON-WORKSHOP-2020---INTERMEDIATE/blob/main/OTHER%20MATERIALS/demo2.png=150x150)
 
 An annoying, CSV/Pandas-based desktop alarm (wrapped in a Tkinter GUI) that plays audio when triggered by an event you&#39;ve &quot;committed&quot; to, e.g. meeting, online lesson. Just so you know… could be paired with a scraper script that gets activated when the hour has come (or just about anything)!
 
-Download buggy, heavy .exe version here: bit.ly/35mvvff
+Download buggy, heavy .exe version [here](bit.ly/35mvvff).
 
-If the .exe in the &quot;dist&quot; folder doesn&#39;t work, I think you&#39;ll need to go to &quot;ALARM.PY EXE\_\_pycache\_\_\alarm.cpython-37.pyc&quot; and run it from there. Brownie points awarded to anyone who can fix this problem.
+If the .exe in the `dist` folder doesn&#39;t work, I think you&#39;ll need to go to `ALARM.PY EXE\__pycache__\ alarm.cpython-37.pyc`
+and run it from there. Brownie points awarded to anyone who can fix this problem.
 
-![](RackMultipart20201021-4-1yz97ug_html_2c4f0c3bfc9f1f47.png) ![](RackMultipart20201021-4-1yz97ug_html_a52744d1422e028a.png)
+<br/>
 
 🗺️  **Getting Started**
 
