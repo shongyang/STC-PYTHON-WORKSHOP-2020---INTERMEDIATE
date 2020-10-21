@@ -2,7 +2,7 @@
 Resource, materials, lesson files, and other stuff for [Sunway Tech Club](https://facebook.com/sunwaytechclub)'s Python Workshop 2020 !
 
 <br/>
-🔖  **Topics covered**
+🔖  **Topics Covered**
 
 Slides viewable here:  [Click Me!](bit.ly/stcpyw20ifs)
 
