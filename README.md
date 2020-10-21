@@ -15,8 +15,9 @@ Slides viewable here:  [Click Me!](bit.ly/stcpyw20ifs)
 
 💡  **Intermediate Project**
 
-![](https://github.com/shongyang/STC-PYTHON-WORKSHOP-2020---INTERMEDIATE/blob/main/OTHER%20MATERIALS/demo1.png=150x150)
-![](https://github.com/shongyang/STC-PYTHON-WORKSHOP-2020---INTERMEDIATE/blob/main/OTHER%20MATERIALS/demo2.png=150x150)
+<img src="https://github.com/shongyang/STC-PYTHON-WORKSHOP-2020---INTERMEDIATE/blob/main/OTHER%20MATERIALS/demo1.png" width="100" height="100">.
+<img src="https://github.com/shongyang/STC-PYTHON-WORKSHOP-2020---INTERMEDIATE/blob/main/OTHER%20MATERIALS/demo2.png" width="100" height="100">
+
 
 An annoying, CSV/Pandas-based desktop alarm (wrapped in a Tkinter GUI) that plays audio when triggered by an event you&#39;ve &quot;committed&quot; to, e.g. meeting, online lesson. Just so you know… could be paired with a scraper script that gets activated when the hour has come (or just about anything)!
 
