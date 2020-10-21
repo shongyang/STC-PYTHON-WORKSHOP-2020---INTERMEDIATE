@@ -26,567 +26,343 @@ If the .exe in the &quot;dist&quot; folder doesn&#39;t work, I think you&#39;ll 
 
 **## Libraries required:**
 
-```from tkcalendar import DateEntry
-
+```
+from tkcalendar import DateEntry
 from playsound import playsound
-
 from tkinter import messagebox
-
 from tkinter import filedialog
-
 from datetime import datetime
-
 from datetime import date
-
 from tkinter import ttk
-
-from tkinter import \*
-
+from tkinter import *
 import pandas as pd
-
 import tkinter.ttk
-
 import time
+
 ```
 
 **## Ready-made functions for you:**
 
 ```
-def set\_upcoming\_text(df):
+def set_upcoming_text(df):
+    date_list = df["date"].tolist()
+    hour_list = df["hour"].tolist()
+    minute_list = df["minute"].tolist()
+    description_list = df["description"].tolist()
+    text = ""
+    for i in range(len(df)):
+        text = (
+            text
+            + "\n"
+            + str(date_list[i])
+            + "   |   "
+            + str(hour_list[i])
+            + ":"
+            + str(minute_list[i])
+            + "   |   "
+            + str(description_list[i])
+            + "\n"
+            + "---------------------------------------------------------------------------------------------------------------------------------------------------------------"
+            + "\n"
+        )
+    upcoming_text.delete(1.0, END)
+    upcoming_text.insert("end-1c", text)
+
+
+def set_past_text(df):
+    date_list = df["date"].tolist()
+    hour_list = df["hour"].tolist()
+    minute_list = df["minute"].tolist()
+    description_list = df["description"].tolist()
+    text = ""
+    for i in range(len(df)):
+        text = (
+            text
+            + "\n"
+            + str(date_list[i])
+            + "   |   "
+            + str(hour_list[i])
+            + ":"
+            + str(minute_list[i])
+            + "   |   "
+            + str(description_list[i])
+            + "\n"
+            + "---------------------------------------------------------------------------------------------------------------------------------------------------------------"
+            + "\n"
+        )
+    past_text.delete(1.0, END)
+    past_text.insert("end-1c", text)
+
+
+def check_alarm():
+    # reading excel file
+    df = pd.read_excel(excel_file_path)
+    desc = ""
+    # matching time and date
+    today_date = date.today()
+    today_date = str(today_date.strftime("%d/%m/%y"))
+
+    now_time = datetime.now()
+    current_time = now_time.strftime("%H:%M")
+
+    for index, row in df.iterrows():
+        # checking only those alarm which are still pending and ignore else
+        if df["status"][index] != "finish":
+            alarm_date = row["date"]
+            hour = row["hour"]
+            minute = row["minute"]
+            hour_str = minute_str = hour_minute_str = ""
+
+            # converting hours from 1 to 01, 9 ot 09 etc
+            if hour >= 0 and hour <= 9:
+                hour_str = "0" + str(hour)
+            else:
+                hour_str = str(hour)
+            # converting minutes from 1 to 01, 9 ot 09 etc
+            if minute >= 0 and minute <= 9:
+                minute_str = "0" + str(minute)
+            else:
+                minute_str = str(minute)
+
+            # matching current time with all alarms time
+            hour_minute_str = hour_str + ":" + minute_str
+            if today_date == alarm_date and current_time == hour_minute_str:
+                df["status"][index] = "finish"
+                desc = df["description"][index]
+                df.to_excel(excel_file_path, index=False)
+                return (True, desc)
+
+    return (False, "")
+
+
+def user_input_values_to_excel(df1, date, hours, minutes, description, mp3_filepath):
+    df2 = pd.DataFrame(
+        {
+            "date": [date],
+            "hour": [hours],
+            "minute": [minutes],
+            "description": [description],
+            "mp3 file path": [mp3_filepath],
+        }
+    )
+
+    df1 = df1.append(df2)
+    # Create a Pandas Excel writer using XlsxWriter as the engine.
+    writer = pd.ExcelWriter(excel_file_path, engine="xlsxwriter")
+    # Convert the dataframe to an XlsxWriter Excel object.
+    df1.to_excel(writer, sheet_name="Sheet1", index=False)
+
+    # Close the Pandas Excel writer and output the Excel file.
+    writer.save()
+
+
+def sorting_table_on_hour(df1):
+    # sorting on base of hours
+    df = pd.read_excel(excel_file_path)
+    result = df.sort_values("hour")
+    result.to_excel(excel_file_path, index=False)
+    return result
+
+
+def stop_loop():
+    global flag
+    flag = False
+
+
+def upload_mp3_file():
+    global mp3_filepath
+    mp3_filepath = filedialog.askopenfilename(
+        initialdir="/",
+        title="Select A MP3 File",
+        filetype=(("mp3", "*.mp3"), ("Äll Files", "*.*")),
+    )
+
+
+def set_alarm(btn_obj):
+    global flag
+    flag = True
+    date = calendar.get()
+    hours = hour_input.get()
+    minutes = minute_input.get()
+    description = description_input.get()
+    hour_input.delete(0, "end")
+    minute_input.delete(0, "end")
+    description_input.delete(0, "end")
+    try:
+        if int(hours) > 24 or int(minutes) > 60 or description == "":
+            messagebox.showinfo("Alert", "invalid field!")
+        else:
+            df = pd.read_excel(excel_file_path, parse_dates=False)
+
+            # writing user input values to excel file
+            df = user_input_values_to_excel(
+                df, date, hours, minutes, description, mp3_filepath
+            )
+            df = sorting_table_on_hour(df)
+            # reading data frames from excel file
+            df = pd.read_excel(excel_file_path, parse_dates=False)
+            upcoming_df = df.loc[df["status"] != "finish"]
+
+            past_df = df.loc[df["status"] == "finish"]
+
+            # fill UPCOMING alarm field
+            set_upcoming_text(upcoming_df)
+
+            # fill PAST alarm field
+            set_past_text(past_df)
+
+            # ringing alarm if time matches
+            while True:
+                # funtion for checking current time matches any alarm or not
+                alarm_match_flag, desc = check_alarm()
+                if alarm_match_flag:
+                    # ring alarm tone
+                    playsound(mp3_filepath)
+                    messagebox.showinfo("Alarm", desc)
+                    # reading data frames from excel file
+                    df = pd.read_excel(excel_file_path, parse_dates=False)
+                    upcoming_df = df.loc[df["status"] != "finish"]
+                    past_df = df.loc[df["status"] == "finish"]
+                    # fill UPCOMING alarm field
+                    set_upcoming_text(upcoming_df)
+                    # fill PAST alarm field
+                    set_past_text(past_df)
+
+                if flag:
+                    alarm_window.update()
+                    time.sleep(1.0)
+                else:
+                    break
+    except:
+        messagebox.showinfo("Alert", "Please fill fields!")
+    hour_input.delete(0, END)
+    minute_input.delete(0, END)
+    description_input.delete(0, END)
 
-date\_list = df[&quot;date&quot;].tolist()
-
-hour\_list = df[&quot;hour&quot;].tolist()
-
-minute\_list = df[&quot;minute&quot;].tolist()
-
-description\_list = df[&quot;description&quot;].tolist()
-
-text = &quot;&quot;
-
-for i in range(len(df)):
-
-text = (
-
-text
-
-+ &quot;\n&quot;
-
-+ str(date\_list[i])
-
-+ &quot; | &quot;
-
-+ str(hour\_list[i])
-
-+ &quot;:&quot;
-
-+ str(minute\_list[i])
-
-+ &quot; | &quot;
-
-+ str(description\_list[i])
-
-+ &quot;\n&quot;
-
-+ &quot;---------------------------------------------------------------------------------------------------------------------------------------------------------------&quot;
-
-+ &quot;\n&quot;
-
-)
-
-upcoming\_text.delete(1.0, END)
-
-upcoming\_text.insert(&quot;end-1c&quot;, text)
-
-def set\_past\_text(df):
-
-date\_list = df[&quot;date&quot;].tolist()
-
-hour\_list = df[&quot;hour&quot;].tolist()
-
-minute\_list = df[&quot;minute&quot;].tolist()
-
-description\_list = df[&quot;description&quot;].tolist()
-
-text = &quot;&quot;
-
-for i in range(len(df)):
-
-text = (
-
-text
-
-+ &quot;\n&quot;
-
-+ str(date\_list[i])
-
-+ &quot; | &quot;
-
-+ str(hour\_list[i])
-
-+ &quot;:&quot;
-
-+ str(minute\_list[i])
-
-+ &quot; | &quot;
-
-+ str(description\_list[i])
-
-+ &quot;\n&quot;
-
-+ &quot;---------------------------------------------------------------------------------------------------------------------------------------------------------------&quot;
-
-+ &quot;\n&quot;
-
-)
-
-past\_text.delete(1.0, END)
-
-past\_text.insert(&quot;end-1c&quot;, text)
-
-def check\_alarm():
-
-# reading excel file
-
-df = pd.read\_excel(excel\_file\_path)
-
-desc = &quot;&quot;
-
-# matching time and date
-
-today\_date = date.today()
-
-today\_date = str(today\_date.strftime(&quot;%d/%m/%y&quot;))
-
-now\_time = datetime.now()
-
-current\_time = now\_time.strftime(&quot;%H:%M&quot;)
-
-for index, row in df.iterrows():
-
-# checking only those alarm which are still pending and ignore else
-
-if df[&quot;status&quot;][index] != &quot;finish&quot;:
-
-alarm\_date = row[&quot;date&quot;]
-
-hour = row[&quot;hour&quot;]
-
-minute = row[&quot;minute&quot;]
-
-hour\_str = minute\_str = hour\_minute\_str = &quot;&quot;
-
-# converting hours from 1 to 01, 9 ot 09 etc
-
-if hour \&gt;= 0 and hour \&lt;= 9:
-
-hour\_str = &quot;0&quot; + str(hour)
-
-else:
-
-hour\_str = str(hour)
-
-# converting minutes from 1 to 01, 9 ot 09 etc
-
-if minute \&gt;= 0 and minute \&lt;= 9:
-
-minute\_str = &quot;0&quot; + str(minute)
-
-else:
-
-minute\_str = str(minute)
-
-# matching current time with all alarms time
-
-hour\_minute\_str = hour\_str + &quot;:&quot; + minute\_str
-
-if today\_date == alarm\_date and current\_time == hour\_minute\_str:
-
-df[&quot;status&quot;][index] = &quot;finish&quot;
-
-desc = df[&quot;description&quot;][index]
-
-df.to\_excel(excel\_file\_path, index=False)
-
-return (True, desc)
-
-return (False, &quot;&quot;)
-
-def user\_input\_values\_to\_excel(df1, date, hours, minutes, description, mp3\_filepath):
-
-df2 = pd.DataFrame(
-
-{
-
-&quot;date&quot;: [date],
-
-&quot;hour&quot;: [hours],
-
-&quot;minute&quot;: [minutes],
-
-&quot;description&quot;: [description],
-
-&quot;mp3 file path&quot;: [mp3\_filepath],
-
-}
-
-)
-
-df1 = df1.append(df2)
-
-# Create a Pandas Excel writer using XlsxWriter as the engine.
-
-writer = pd.ExcelWriter(excel\_file\_path, engine=&quot;xlsxwriter&quot;)
-
-# Convert the dataframe to an XlsxWriter Excel object.
-
-df1.to\_excel(writer, sheet\_name=&quot;Sheet1&quot;, index=False)
-
-# Close the Pandas Excel writer and output the Excel file.
-
-writer.save()
-
-def sorting\_table\_on\_hour(df1):
-
-# sorting on base of hours
-
-df = pd.read\_excel(excel\_file\_path)
-
-result = df.sort\_values(&quot;hour&quot;)
-
-result.to\_excel(excel\_file\_path, index=False)
-
-return result
-
-def stop\_loop():
-
-global flag
-
-flag = False
-
-def upload\_mp3\_file():
-
-global mp3\_filepath
-
-mp3\_filepath = filedialog.askopenfilename(
-
-initialdir=&quot;/&quot;,
-
-title=&quot;Select A MP3 File&quot;,
-
-filetype=((&quot;mp3&quot;, &quot;\*.mp3&quot;), (&quot;Äll Files&quot;, &quot;\*.\*&quot;)),
-
-)
-
-def set\_alarm(btn\_obj):
-
-global flag
-
-flag = True
-
-date = calendar.get()
-
-hours = hour\_input.get()
-
-minutes = minute\_input.get()
-
-description = description\_input.get()
-
-hour\_input.delete(0, &quot;end&quot;)
-
-minute\_input.delete(0, &quot;end&quot;)
-
-description\_input.delete(0, &quot;end&quot;)
-
-try:
-
-if int(hours) \&gt; 24 or int(minutes) \&gt; 60 or description == &quot;&quot;:
-
-messagebox.showinfo(&quot;Alert&quot;, &quot;invalid field!&quot;)
-
-else:
-
-df = pd.read\_excel(excel\_file\_path, parse\_dates=False)
-
-# writing user input values to excel file
-
-df = user\_input\_values\_to\_excel(
-
-df, date, hours, minutes, description, mp3\_filepath
-
-)
-
-df = sorting\_table\_on\_hour(df)
-
-# reading data frames from excel file
-
-df = pd.read\_excel(excel\_file\_path, parse\_dates=False)
-
-upcoming\_df = df.loc[df[&quot;status&quot;] != &quot;finish&quot;]
-
-past\_df = df.loc[df[&quot;status&quot;] == &quot;finish&quot;]
-
-# fill UPCOMING alarm field
-
-set\_upcoming\_text(upcoming\_df)
-
-# fill PAST alarm field
-
-set\_past\_text(past\_df)
-
-# ringing alarm if time matches
-
-while True:
-
-# funtion for checking current time matches any alarm or not
-
-alarm\_match\_flag, desc = check\_alarm()
-
-if alarm\_match\_flag:
-
-# ring alarm tone
-
-playsound(mp3\_filepath)
-
-messagebox.showinfo(&quot;Alarm&quot;, desc)
-
-# reading data frames from excel file
-
-df = pd.read\_excel(excel\_file\_path, parse\_dates=False)
-
-upcoming\_df = df.loc[df[&quot;status&quot;] != &quot;finish&quot;]
-
-past\_df = df.loc[df[&quot;status&quot;] == &quot;finish&quot;]
-
-# fill UPCOMING alarm field
-
-set\_upcoming\_text(upcoming\_df)
-
-# fill PAST alarm field
-
-set\_past\_text(past\_df)
-
-if flag:
-
-alarm\_window.update()
-
-time.sleep(1.0)
-
-else:
-
-break
-
-except:
-
-messagebox.showinfo(&quot;Alert&quot;, &quot;Please fill fields!&quot;)
-
-hour\_input.delete(0, END)
-
-minute\_input.delete(0, END)
-
-description\_input.delete(0, END)
 ```
 
 **## Unique GUI elements for reference**
 
 ```
-alarm\_window = Tk() # creating tkinger window
-
-alarm\_window.title(&quot;STC Python Workshop 2020 - Intermediate Project&quot;) # set title of window
-
-alarm\_window.iconbitmap = &quot;python-logo-2b.ico&quot; #icon
-
-w = alarm\_window.winfo\_screenwidth() # getting current window width
-
-h = alarm\_window.winfo\_screenheight() # getting current window height
-
-alarm\_window.geometry(&quot;%dx%d+0+0&quot; % (w, h)) # setting size of window to full
-
-alarm\_window.resizable(width=True, height=True) # fixing size of window
+alarm_window = Tk()  # creating tkinger window
+alarm_window.title("STC Python Workshop 2020 - Intermediate Project")  # set title of window
+alarm_window.iconbitmap = "python-logo-2b.ico" #icon
+w = alarm_window.winfo_screenwidth()  # getting current window width
+h = alarm_window.winfo_screenheight()  # getting current window height
+alarm_window.geometry("%dx%d+0+0" % (w, h))  # setting size of window to full
+alarm_window.resizable(width=True, height=True)  # fixing size of window
 
 # for date and time label
-
-date\_calendar = Label(alarm\_window, text=&quot;Select Date/Time&quot;)
-
-date\_calendar.config(font=(&quot;Helvetica&quot;, 15))
-
-date\_calendar.grid(row=0, column=0, columnspan=5)
+date_calendar = Label(alarm_window, text="Select Date/Time")
+date_calendar.config(font=("Helvetica", 15))
+date_calendar.grid(row=0, column=0, columnspan=5)
 
 # for description label
-
-description\_label = Label(alarm\_window, text=&quot;Description&quot;)
-
-description\_label.config(font=(&quot;Helvetica&quot;, 15))
-
-description\_label.grid(row=0, column=6, padx=250)
+description_label = Label(alarm_window, text="Description")
+description_label.config(font=("Helvetica", 15))
+description_label.grid(row=0, column=6, padx=250)
 
 # for mp3 label
+mp3_label = Label(alarm_window, text="mp3 upload")
+mp3_label.config(font=("Helvetica", 15))
+mp3_label.grid(row=0, column=7, padx=100)
 
-mp3\_label = Label(alarm\_window, text=&quot;mp3 upload&quot;)
-
-mp3\_label.config(font=(&quot;Helvetica&quot;, 15))
-
-mp3\_label.grid(row=0, column=7, padx=100)
-
-########## row = 1 #########
-
+########## row = 1  #########
 # for calendar pop-up
-
 calendar = DateEntry(
-
-alarm\_window,
-
-width=12,
-
-background=&quot;darkblue&quot;,
-
-foreground=&quot;white&quot;,
-
-borderwidth=2,
-
-date\_pattern=&quot;dd/mm/yy&quot;,
-
+    alarm_window,
+    width=12,
+    background="darkblue",
+    foreground="white",
+    borderwidth=2,
+    date_pattern="dd/mm/yy",
 )
 
-calendar.config(font=(&quot;Helvetica&quot;, 15))
-
+calendar.config(font=("Helvetica", 15))
 calendar.grid(row=1, column=0)
 
 # for hour label
-
-hour\_label = Label(alarm\_window, text=&quot;Hour:&quot;)
-
-hour\_label.config(font=(&quot;Helvetica&quot;, 15))
-
-hour\_label.grid(row=1, column=1)
+hour_label = Label(alarm_window, text="Hour:")
+hour_label.config(font=("Helvetica", 15))
+hour_label.grid(row=1, column=1)
 
 # for hour input
-
-hour\_input = Entry(alarm\_window, borderwidth=3, width=3)
-
-hour\_input.config(font=(&quot;Helvetica&quot;, 15))
-
-hour\_input.grid(row=1, column=2)
+hour_input = Entry(alarm_window, borderwidth=3, width=3)
+hour_input.config(font=("Helvetica", 15))
+hour_input.grid(row=1, column=2)
 
 # for minute label
-
-minute\_label = Label(alarm\_window, text=&quot;Minute:&quot;)
-
-minute\_label.config(font=(&quot;Helvetica&quot;, 15))
-
-minute\_label.grid(row=1, column=3)
+minute_label = Label(alarm_window, text="Minute:")
+minute_label.config(font=("Helvetica", 15))
+minute_label.grid(row=1, column=3)
 
 # for minute input
-
-minute\_input = Entry(alarm\_window, borderwidth=3, width=3)
-
-minute\_input.config(font=(&quot;Helvetica&quot;, 15))
-
-minute\_input.grid(row=1, column=4)
+minute_input = Entry(alarm_window, borderwidth=3, width=3)
+minute_input.config(font=("Helvetica", 15))
+minute_input.grid(row=1, column=4)
 
 # for description input
-
-description\_input = Entry(alarm\_window, borderwidth=3, width=40)
-
-description\_input.config(font=(&quot;Helvetica&quot;, 15))
-
-description\_input.grid(row=1, column=6)
+description_input = Entry(alarm_window, borderwidth=3, width=40)
+description_input.config(font=("Helvetica", 15))
+description_input.grid(row=1, column=6)
 
 # for upload mp3 file
+upload_btn = Button(alarm_window, text="upload audio", bd=3, command=upload_mp3_file)
+upload_btn.config(font=("Helvetica"))
+upload_btn.grid(row=1, column=7)
 
-upload\_btn = Button(alarm\_window, text=&quot;upload audio&quot;, bd=3, command=upload\_mp3\_file)
-
-upload\_btn.config(font=(&quot;Helvetica&quot;))
-
-upload\_btn.grid(row=1, column=7)
-
-########## row = 2 ##########
-
-commit\_btn = Button(
-
-alarm\_window, text=&quot;commit&quot;, bd=3, command=lambda: set\_alarm(commit\_btn)
-
+########## row = 2   ##########
+commit_btn = Button(
+    alarm_window, text="commit", bd=3, command=lambda: set_alarm(commit_btn)
 )
+commit_btn.config(font=("Helvetica"))
+commit_btn.grid(row=2, column=7, pady=20)
 
-commit\_btn.config(font=(&quot;Helvetica&quot;))
+########## row = 3   ##########
+line_canvas = Canvas(alarm_window, width=1350, height=2, background="black")
+line_canvas.grid(row=3, column=0, columnspan=9)
+line_canvas.create_line(0, 0, 400, 400, fill="black")
 
-commit\_btn.grid(row=2, column=7, pady=20)
-
-########## row = 3 ##########
-
-line\_canvas = Canvas(alarm\_window, width=1350, height=2, background=&quot;black&quot;)
-
-line\_canvas.grid(row=3, column=0, columnspan=9)
-
-line\_canvas.create\_line(0, 0, 400, 400, fill=&quot;black&quot;)
-
-########## row = 4 ##########
-
+########## row = 4   ##########
 # for minute label
+upcoming_label = Label(alarm_window, text="Upcoming Alarms")
+upcoming_label.config(font=("Helvetica", 15))
+upcoming_label.grid(row=4, column=0, columnspan=2)
 
-upcoming\_label = Label(alarm\_window, text=&quot;Upcoming Alarms&quot;)
+new_alarm_btn = Button(alarm_window, text="stop", bd=3, command=stop_loop)
+new_alarm_btn.config(font=("Helvetica"))
+new_alarm_btn.grid(row=4, column=7, columnspan=7)
 
-upcoming\_label.config(font=(&quot;Helvetica&quot;, 15))
-
-upcoming\_label.grid(row=4, column=0, columnspan=2)
-
-new\_alarm\_btn = Button(alarm\_window, text=&quot;stop&quot;, bd=3, command=stop\_loop)
-
-new\_alarm\_btn.config(font=(&quot;Helvetica&quot;))
-
-new\_alarm\_btn.grid(row=4, column=7, columnspan=7)
-
-########## row = 5 ##########
-
+########## row = 5   ##########
 # for upcoming text field
-
-upcoming\_text = Text(alarm\_window, borderwidth=2, width=90, height=10)
-
-upcoming\_text.config(font=(&quot;Helvetica&quot;, 12))
-
-upcoming\_text.grid(row=5, column=2, columnspan=5)
-
-scrollbar = Scrollbar(alarm\_window, command=upcoming\_text.yview)
-
+upcoming_text = Text(alarm_window, borderwidth=2, width=90, height=10)
+upcoming_text.config(font=("Helvetica", 12))
+upcoming_text.grid(row=5, column=2, columnspan=5)
+scrollbar = Scrollbar(alarm_window, command=upcoming_text.yview)
 scrollbar.grid(row=5, column=7, sticky=W, ipady=70)
+upcoming_text.config(yscrollcommand=scrollbar.set)
 
-upcoming\_text.config(yscrollcommand=scrollbar.set)
+########## row = 6   ##########
+line_canvas = Canvas(alarm_window, width=1350, height=2, background="black")
+line_canvas.grid(row=6, column=0, columnspan=9, pady=20)
+line_canvas.create_line(0, 0, 400, 400, fill="black")
 
-########## row = 6 ##########
-
-line\_canvas = Canvas(alarm\_window, width=1350, height=2, background=&quot;black&quot;)
-
-line\_canvas.grid(row=6, column=0, columnspan=9, pady=20)
-
-line\_canvas.create\_line(0, 0, 400, 400, fill=&quot;black&quot;)
-
-########## row = 7 ##########
-
+########## row = 7   ##########
 # for minute label
+past_label = Label(alarm_window, text="Past Alarms")
+past_label.config(font=("Helvetica", 15))
+past_label.grid(row=7, column=0, columnspan=2)
 
-past\_label = Label(alarm\_window, text=&quot;Past Alarms&quot;)
-
-past\_label.config(font=(&quot;Helvetica&quot;, 15))
-
-past\_label.grid(row=7, column=0, columnspan=2)
-
-########## row = 8 ##########
-
+########## row = 8   ##########
 # for upcoming text field
-
-past\_text = Text(alarm\_window, borderwidth=2, width=90, height=10)
-
-past\_text.config(font=(&quot;Helvetica&quot;, 12))
-
-past\_text.grid(row=8, column=2, columnspan=5)
-
-scrollbar = Scrollbar(alarm\_window, command=past\_text.yview)
-
+past_text = Text(alarm_window, borderwidth=2, width=90, height=10)
+past_text.config(font=("Helvetica", 12))
+past_text.grid(row=8, column=2, columnspan=5)
+scrollbar = Scrollbar(alarm_window, command=past_text.yview)
 scrollbar.grid(row=8, column=7, sticky=W, ipady=70)
+past_text.config(yscrollcommand=scrollbar.set)
+alarm_window.mainloop()  # compiling all objects in window
 
-past\_text.config(yscrollcommand=scrollbar.set)
-
-alarm\_window.mainloop() # compiling all objects in window
 ```
 
 💌  **Last but not least**
