@@ -376,8 +376,8 @@ alarm_window.mainloop()  # compiling all objects in window
 **This repository is part of Sunway Tech Club&#39;s** _ **Python Workshop 2020** _
 
 - Session 1 (Beginner): https://github.com/JustNunuz/STC-PYTHON-WORKSHOP-2020
-- Session 2 (Intermediate): https://github.com/JustNunuz/STC-PYTHON-WORKSHOP-2020
-- Session 3 (Project / Advanced): https://github.com/JustNunuz/STC-PYTHON-WORKSHOP-2020
+- Session 2 (Intermediate): https://github.com/shongyang/STC-PYTHON-WORKSHOP-2020---INTERMEDIATE
+- Session 3 (Project / Advanced): https://github.com/easonchai/python2020-workshop
 
 **The Long List of Sources:**
 
