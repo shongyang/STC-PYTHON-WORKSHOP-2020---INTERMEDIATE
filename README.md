@@ -1,6 +1,8 @@
 # 🐍 STC-PYTHON-WORKSHOP-2020 - INTERMEDIATE
 Resource, materials, lesson files, and other stuff for [Sunway Tech Club](https://facebook.com/sunwaytechclub)'s Python Workshop 2020 !
 
+##To know a little about the workshop, click [here](bit.ly/stcpyw20)
+
 <br/>
 🔖  **Topics Covered**
 
