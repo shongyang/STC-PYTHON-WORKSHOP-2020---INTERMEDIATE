@@ -2,17 +2,21 @@
 Resource, materials, lesson files, and other stuff for Sunway Tech Club's Python Workshop 2020 !
 
 🐍 **STC-PYTHON-WORKSHOP-2020**
+<br/>
 
 🔖  **Topics covered**
 
 Slides viewable here: bit.ly/stcpyw20ifs
 
-- CSV: Exercise #1 (https://bit.ly/3js5WPf), Exercise #2 (https://bit.ly/3kjcnFv)
+- CSV: <a name="Exercise #1">https://bit.ly/3js5WPf</a>, Exercise #2 (https://bit.ly/3kjcnFv)
 - Pandas: Exercise #1 (https://bit.ly/37uLCdm), Exercise #2 (https://bit.ly/3md05ia)
 - Tkinter: Exercise #1 (https://bit.ly/3ogdRm4), Exercise #2 (https://bit.ly/35gZYvk), Exercise #3 (https://bit.ly/3dJrKEE)
-
+<br/>
 
 💡  **Intermediate Project**
+
+![alt text](http://url/to/img.png)
+![alt text](http://url/to/img.png)
 
 An annoying, CSV/Pandas-based desktop alarm (wrapped in a Tkinter GUI) that plays audio when triggered by an event you&#39;ve &quot;committed&quot; to, e.g. meeting, online lesson. Just so you know… could be paired with a scraper script that gets activated when the hour has come (or just about anything)!
 
