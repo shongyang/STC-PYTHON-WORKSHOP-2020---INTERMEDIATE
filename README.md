@@ -3,7 +3,7 @@ Resource, materials, lesson files, and other stuff for [Sunway Tech Club](https:
 
 ##To know a little about the workshop, click [here](bit.ly/stcpyw20)
 
-<br/>
+
 🔖  **Topics Covered**
 
 Slides viewable here:  [Click Me!](bit.ly/stcpyw20ifs)
