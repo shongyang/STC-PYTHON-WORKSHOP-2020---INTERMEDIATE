@@ -3,7 +3,7 @@ Resource, materials, lesson files, and other stuff for Sunway Tech Club's Python
 
 🐍 **STC-PYTHON-WORKSHOP-2020**
 <br/>
-
+<br/>
 🔖  **Topics covered**
 
 Slides viewable here:  [Click Me!](bit.ly/stcpyw20ifs)
