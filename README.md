@@ -6,6 +6,9 @@ Resource, materials, lesson files, and other stuff for [Sunway Tech Club](https:
 
 Slides viewable here:  [Click Me!](bit.ly/stcpyw20ifs)
 
+[![Full Workshop Video Here](https://j.gifs.com/q7vN7G.gif)](http://bit.ly/stcpyw20iv)
+
+
 - CSV: [Exercise #1](https://bit.ly/3js5WPf), [Exercise #2](https://bit.ly/3kjcnFv)
 - Pandas: [Exercise #1](https://bit.ly/37uLCdm), [Exercise #2](https://bit.ly/3md05ia)
 - Tkinter: [Exercise #1](https://bit.ly/3ogdRm4), [Exercise #2](https://bit.ly/35gZYvk), [Exercise #3](https://bit.ly/3dJrKEE)
