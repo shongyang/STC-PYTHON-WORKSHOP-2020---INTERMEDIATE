@@ -1,12 +1,13 @@
-# STC-PYTHON-WORKSHOP-2020---INTERMEDIATE
-Resource, materials, lesson files, and other stuff for Sunway Tech Club's Python Workshop 2020 !
+# 🐍 STC-PYTHON-WORKSHOP-2020 - INTERMEDIATE
+Resource, materials, lesson files, and other stuff for [Sunway Tech Club](https://facebook.com/sunwaytechclub)'s Python Workshop 2020 ! Check out our landing page [here](bit.ly/stcpyw20)
 
-🐍 **STC-PYTHON-WORKSHOP-2020**
-<br/>
 
-🔖  **Topics covered**
+🔖  **Topics Covered**
 
 Slides viewable here:  [Click Me!](bit.ly/stcpyw20ifs)
+
+[![Full Workshop Video Here](https://j.gifs.com/q7vN7G.gif)](http://bit.ly/stcpyw20iv)
+
 
 - CSV: [Exercise #1](https://bit.ly/3js5WPf), [Exercise #2](https://bit.ly/3kjcnFv)
 - Pandas: [Exercise #1](https://bit.ly/37uLCdm), [Exercise #2](https://bit.ly/3md05ia)
@@ -15,16 +16,18 @@ Slides viewable here:  [Click Me!](bit.ly/stcpyw20ifs)
 
 💡  **Intermediate Project**
 
-![alt text](http://url/to/img.png)
-![alt text](http://url/to/img.png)
+<img src="https://github.com/shongyang/STC-PYTHON-WORKSHOP-2020---INTERMEDIATE/blob/main/OTHER%20MATERIALS/demo1.png" width="100" height="100">.
+<img src="https://github.com/shongyang/STC-PYTHON-WORKSHOP-2020---INTERMEDIATE/blob/main/OTHER%20MATERIALS/demo2.png" width="100" height="100">
+
 
 An annoying, CSV/Pandas-based desktop alarm (wrapped in a Tkinter GUI) that plays audio when triggered by an event you&#39;ve &quot;committed&quot; to, e.g. meeting, online lesson. Just so you know… could be paired with a scraper script that gets activated when the hour has come (or just about anything)!
 
-Download buggy, heavy .exe version here: bit.ly/35mvvff
+Download buggy, heavy .exe version [here](bit.ly/35mvvff).
 
-If the .exe in the &quot;dist&quot; folder doesn&#39;t work, I think you&#39;ll need to go to &quot;ALARM.PY EXE\_\_pycache\_\_\alarm.cpython-37.pyc&quot; and run it from there. Brownie points awarded to anyone who can fix this problem.
+If the .exe in the `dist` folder doesn&#39;t work, I think you&#39;ll need to go to `ALARM.PY EXE\__pycache__\ alarm.cpython-37.pyc`
+and run it from there. Brownie points awarded to anyone who can fix this problem.
 
-![](RackMultipart20201021-4-1yz97ug_html_2c4f0c3bfc9f1f47.png) ![](RackMultipart20201021-4-1yz97ug_html_a52744d1422e028a.png)
+<br/>
 
 🗺️  **Getting Started**
 
@@ -374,8 +377,8 @@ alarm_window.mainloop()  # compiling all objects in window
 **This repository is part of Sunway Tech Club&#39;s** _ **Python Workshop 2020** _
 
 - Session 1 (Beginner): https://github.com/JustNunuz/STC-PYTHON-WORKSHOP-2020
-- Session 2 (Intermediate): https://github.com/JustNunuz/STC-PYTHON-WORKSHOP-2020
-- Session 3 (Project / Advanced): https://github.com/JustNunuz/STC-PYTHON-WORKSHOP-2020
+- Session 2 (Intermediate): https://github.com/shongyang/STC-PYTHON-WORKSHOP-2020---INTERMEDIATE
+- Session 3 (Project / Advanced): https://github.com/easonchai/python2020-workshop
 
 **The Long List of Sources:**
 
